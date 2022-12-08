@@ -4,6 +4,8 @@ const { Model, DataTypes } = require('sequelize');
 const sequelize = require('../config/connection');
 const Category = require('./Category');
 
+const ProductTag = require('./ProductTag');
+
 // Initialize Product model (table) by extending off Sequelize's Model class
 class Product extends Model {}
 
@@ -47,6 +49,12 @@ Product.init(
 
   },
   {
+    hooks:{
+      beforeDestroy: async (product) =>{
+        console.log('Eliminar dependencias ProductTag product_id=:',product.id)
+        await ProductTag.destroy( {where : {product_id:product.id} })
+      }
+    },
     sequelize,
     timestamps: false,
     freezeTableName: true,

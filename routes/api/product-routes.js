@@ -113,8 +113,18 @@ router.put('/:id', (req, res) => {
     });
 });
 
-router.delete('/:id', (req, res) => {
+router.delete('/:id', async (req, res) => {
   // delete one product by its `id` value
+  try {
+    const result = await Product.destroy({
+      where:{id:req.params.id},
+       individualHooks: true    //se implementa eliminar las dependencias de ProductTag
+    });
+    res.status(200).json(result);
+  }
+  catch(error){
+    res.status(500).json(error);
+  }
 });
 
 module.exports = router;
